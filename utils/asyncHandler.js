@@ -1,11 +1,22 @@
-const asyncHandler = (requestHandler)=>{
-    (req,res, next) =>{
-        Promise.resolve(requestHandler(req ,res, next)).
-        catch((err)=>next(err))
-    }
-}
+// utils/asyncHandler.js
 
-export {asyncHandler}
+// asyncHandler ek higher-order function hai
+// Ye controller function leta hai aur Express-compatible function return karta hai
+const asyncHandler = (requestHandler) => {
+
+    // ❗ YAHI return missing tha tumhare code me
+    return (req, res, next) => {
+
+        // Promise.resolve ensures:
+        // - sync errors catch ho
+        // - async errors catch ho
+        Promise
+            .resolve(requestHandler(req, res, next))
+            .catch((err) => next(err)); // error ko Express error middleware tak bhej do
+    };
+};
+
+export { asyncHandler };
 
 
 
