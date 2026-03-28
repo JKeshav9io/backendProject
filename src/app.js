@@ -10,6 +10,7 @@ import cors from "cors";
 // Import cookie-parser middleware
 // It helps Express read cookies sent by the browser
 import cookieParser from "cookie-parser";
+import { ApiError } from "./utils/apiError.js";
 
 // Create an Express application instance
 // `app` is the central object that controls the server
@@ -61,6 +62,38 @@ app.use(express.static("public"));
 // After this, cookies are available as: req.cookies
 // Very important for authentication using cookies (JWT/session)
 app.use(cookieParser());
+
+
+// -------------------- NOT FOUND HANDLER --------------------
+
+// If no route matched above middleware/router stack,
+// convert it into a consistent API error.
+app.use((req, res, next) => {
+    next(new ApiError(404, `Route not found: ${req.originalUrl}`));
+});
+
+
+// -------------------- GLOBAL ERROR HANDLER --------------------
+
+// Express recognizes this as error middleware because of 4 params.
+// Any `next(error)` from routes/middleware lands here.
+app.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500;
+
+    // Avoid leaking internals in production; include stack only in development.
+    const response = {
+        success: false,
+        message: err.message || "Internal Server Error",
+        errors: err.errors || [],
+        data: null,
+    };
+
+    if (process.env.NODE_ENV === "development") {
+        response.stack = err.stack;
+    }
+
+    res.status(statusCode).json(response);
+});
 
 
 // Export the app so it can be used in index.js / server.js

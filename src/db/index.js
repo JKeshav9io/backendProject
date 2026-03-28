@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 
 // Import database name from constants
 // Separating constants avoids hardcoding values everywhere
-import { DB_NAME } from "../src/constants.js";
+import { DB_NAME } from "../constants.js";
 
 // Async function because database connection is a network operation
 // Network calls take time → must use async/await

@@ -2,20 +2,14 @@
 // This keeps secrets (DB URL, PORT, API keys) out of code
 import dotenv from "dotenv";
 
-// Express is the web framework that handles routes, middleware, requests, responses
-import express from "express";
-
 // Import database connection function
 // Separation of concerns: DB logic is NOT written here
-import connectDB from "../db/index.js";
+import connectDB from "./db/index.js";
+import { app } from "./app.js";
 
 // Load environment variables
 // path "./.env" means load variables from .env file at project root
 dotenv.config({ path: "./.env" });
-
-// Create express application instance
-// app represents your backend server
-const app = express();
 
 // Call database connection function
 // This ensures DB connects as soon as server starts
